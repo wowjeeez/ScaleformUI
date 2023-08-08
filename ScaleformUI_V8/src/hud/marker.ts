@@ -123,4 +123,43 @@ export class Marker {
         }
     }
 
+    /**
+     * Returns a promise that will resolve when the player enters the marker.
+     * If the player is already inside, the promise will instantly resolve.
+     */
+    public nextEnter() {
+        return new Promise(resolve => {
+            if (this.isInMarker()) return resolve(true)
+            const cleanup = this.onMarkerEnter(() => {
+                resolve(true)
+                cleanup()
+            })
+        })
+    }
+
+    /**
+     * Returns a promise that will resolve when the player leaves the marker.
+     * Unlike `nextEnter()` this **WILL NOT** resolve if the player is already outside of the marker.
+     */
+    public nextLeave() {
+        return new Promise(resolve => {
+            const cleanup = this.onMarkerLeave(() => {
+                resolve(true)
+                cleanup()
+            })
+        })
+    }
+
+    /**
+     * Returns a promise that will resolve when the player leaves or enters this promise. The resolved value will indicate what happened.
+     */
+    public enterOrLeave(): Promise<"IN" | "OUT"> {
+        return new Promise(resolve => {
+            const cleanup = this.onMarkerEnterOrLeave((_, newState) => {
+                resolve(newState)
+                cleanup()
+            })
+        })
+    }
+
 }

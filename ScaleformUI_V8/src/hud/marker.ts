@@ -48,7 +48,7 @@ export class Marker {
             null as unknown as string, null as unknown as string, false
             )
         if (this.config.checkZ) {
-            this.updateIsInMarkerState(coords.isInsideSphere(this.config.position, this.config.scale|| Vector3.create(1)))
+            this.updateIsInMarkerState(coords.isInsideSphere(this.config.position, this.config.scale || Vector3.create(1)))
         } else {
             const dsquared = coords.distanceSquared(this.config.position)
             const scale = this.config.scale|| Vector3.create(1)

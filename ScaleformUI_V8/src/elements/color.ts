@@ -1,4 +1,4 @@
-export enum Colors {
+export enum Color {
     NONE = -1,
     HUD_COLOUR_PURE_WHITE = 0,
     HUD_COLOUR_WHITE = 1,

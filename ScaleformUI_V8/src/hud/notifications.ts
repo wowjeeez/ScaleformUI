@@ -1,12 +1,13 @@
-import {NotificationCharacters, NotificationColors, NotificationIcon, NotificationType} from "../elements/notification";
+import {NotificationCharacters, NotificationColors, NotificationType} from "../elements/notification";
 import {Vector3} from "../math/vector3";
 import {Rgba} from "../math/rgba";
 import {loadPedHeadshot, waitUntilReturns} from "../helpers/loaders";
 import {noop} from "@babel/types";
+import {Color} from "../elements/color";
+import {Font} from "../elements/font";
 
 export class Notification {
     public static Type = NotificationType
-    public static NotificationIcon = NotificationIcon
     public static IconChars = NotificationCharacters
     public static Colors = NotificationColors
 
@@ -86,7 +87,6 @@ export class Notification {
      * @param subtitle The subtitle
      * @param text The body
      * @param characterIcon `NotificationCharacters` The character icon
-     * @param notificationIcon `NotificationIcon` The notification icon (defaults to `ChatBox`)
      * @param notificationType `NotificationType` The notification type
      * @param backgroundColor `NotificationColors` The background color
      * @param flashColor `Rgba` The color of the flash (optional)
@@ -98,7 +98,6 @@ export class Notification {
         subtitle: string,
         text: string,
         characterIcon = NotificationCharacters.Default,
-        notificationIcon = NotificationIcon.ChatBox,
         notificationType = NotificationType.Default,
         backgroundColor = NotificationColors.Default,
         flashColor?: Rgba,
@@ -142,11 +141,113 @@ export class Notification {
         return noti
     }
 
-
-    public static showVersusNotification() {
-
+    /**
+     * Shows a versus notification between 2 ped heads (the notification you see in GTA online when you keep killing someone)
+     * @param leftPed Left ped id
+     * @param leftScore Left score
+     * @param leftColor `Color` Left color
+     * @param rightPed Right ped
+     * @param rightScore Right score
+     * @param rightColor `Color` Right color
+     */
+    public static async showVersusNotification(leftPed: number, leftScore: number, leftColor: Color, rightPed: number, rightScore: number, rightColor: Color) {
+        const [leftHandle, rightHandle] = await Promise.all([loadPedHeadshot(leftPed), loadPedHeadshot(rightPed)])
+        const [leftTxd, rightTxd] = [GetPedheadshotTxdString(leftHandle), GetPedheadshotTxdString(rightHandle)]
+        BeginTextCommandThefeedPost("")
+        // @ts-ignore colors (param 7 and 8) are not yet supported on the native def TODO! update the native spec
+        const noti = new Notification(EndTextCommandThefeedPostVersusTu(leftTxd, leftTxd, leftScore, rightTxd, rightTxd, rightScore, leftColor, rightColor))
+        UnregisterPedheadshot(leftHandle)
+        UnregisterPedheadshot(rightHandle)
+        return noti
     }
 
+    /**
+     * Puts a floating text in the world
+     * @param coords `Vector3` The text coords
+     * @param color `Rgba` The color
+     * @param text The text
+     * @param font `Font` The font
+     * @param size `number` The size
+     */
+    public static draw3dText(coords: Vector3, color: Rgba, text: string, font: Font, size: number) {
+        const cam = Vector3.fromArr(GetGameplayCamCoord())
+        const dist = cam.distance(coords)
+        const internalScale = (1 / dist) * size
+        const fov = (1 / GetGameplayCamFov()) * 100
+        const scale = internalScale * fov
+        SetTextScale(0.1 * scale, 0.15 * scale)
+        SetTextFont(font)
+        SetTextProportional(true)
+        SetTextColour(color.r, color.g, color.b, color.a)
+        SetTextDropshadow(5, 0, 0, 0, 255)
+        SetTextEdge(2, 0, 0, 0, 150)
+        SetTextDropShadow()
+        SetTextOutline()
+        SetTextCentre(true)
+        SetDrawOrigin(coords.x, coords.y, coords.z, 0)
+        BeginTextCommandDisplayText("STRING")
+        AddTextComponentSubstringPlayerName(text)
+        EndTextCommandDisplayText(0, 0)
+        ClearDrawOrigin()
+    }
+
+    /**
+     * Draws a text on the screen
+     * @param x X coord
+     * @param y Y coord
+     * @param text The text
+     * @param color `Rgba` The color
+     * @param font `Font` The font
+     * @param textAlignment The text alignment. 0, 1 or 2
+     * @param shadow Whether the text should have a shadow (defaults to `true`)
+     * @param outline Whether the text should be outlined (defaults to `true`)
+     * @param wrap Text wrapping style. (defaults to `0`, wont do anything)
+     */
+    public static drawText(
+        x: number,
+        y: number,
+        text: string,
+        color = Rgba.white,
+        font = Font.CHALET_COMPRIME_COLOGNE,
+        textAlignment: 0 | 1 | 2 = 1,
+        shadow = true,
+        outline = true,
+        wrap = 0) {
+        const [screenw, screenh] = GetActiveScreenResolution()
+        const height = 1080
+        const ratio = screenw / screenh
+        const width = height * ratio
+        SetTextFont(font)
+        SetTextScale(0.0, 0.5)
+        SetTextColour(color.r, color.g, color.b, color.a)
+        if (shadow) SetTextDropShadow()
+        if (outline) SetTextOutline()
+
+        if (wrap !== 0) {
+            const xSize = (x + wrap) / width
+            SetTextWrap(x, xSize)
+        }
+        if (textAlignment === 0) {
+            SetTextCentre(true)
+        } else if (textAlignment == 2) {
+            SetTextRightJustify(true)
+            SetTextWrap(0, x)
+        }
+        BeginTextCommandDisplayText("jamyfafi")
+        AddTextComponentSubstringPlayerName(text)
+        EndTextCommandDisplayText(x, y)
+    }
+
+    /**
+     * Shows a subtitle on the screen
+     * @param msg The message
+     * @param duration The duration in miliseconds (defaults to `2500`)
+     */
+    public static showSubtitle(msg: string, duration = 2500) {
+        AddTextEntry("ScaleformUISubtitle", msg)
+        BeginTextCommandPrint("ScaleformUISubtitle")
+        EndTextCommandPrint(duration, true)
+    }
 
 
 }

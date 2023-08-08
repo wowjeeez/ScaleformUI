@@ -7,5 +7,6 @@ export enum NotificationColors {
     Cyan = 48,
     Blue = 51,
     Purple = 49,
-    Rose = 45
+    Rose = 45,
+    Default = -1
 }

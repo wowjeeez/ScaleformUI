@@ -71,7 +71,7 @@ export class Marker {
         this.config[key] = value
     }
 
-    public isInMarker() {
+    public isPlayerInside() {
         return this.isInMkr
     }
 
@@ -95,7 +95,7 @@ export class Marker {
      * Returns a cleanup function that will remove the listener when called.
      * @param handler
      */
-    public onMarkerEnter(handler: MarkerEventHandlerSig) {
+    public onEnter(handler: MarkerEventHandlerSig) {
         return this.registerEventHandler("IN", handler)
     }
     /**
@@ -103,7 +103,7 @@ export class Marker {
      * Returns a cleanup function that will remove the listener when called.
      * @param handler
      */
-    public onMarkerLeave(handler: MarkerEventHandlerSig) {
+    public onLeave(handler: MarkerEventHandlerSig) {
         return this.registerEventHandler("OUT", handler)
     }
 
@@ -112,7 +112,7 @@ export class Marker {
      * Returns a cleanup function that will remove the listener when called.
      * @param handler
      */
-    public onMarkerEnterOrLeave(handler: MarkerEventHandlerSig) {
+    public onEnterOrLeave(handler: MarkerEventHandlerSig) {
         return this.registerEventHandler("BOTH", handler)
     }
 
@@ -129,8 +129,8 @@ export class Marker {
      */
     public nextEnter(): Promise<true> {
         return new Promise(resolve => {
-            if (this.isInMarker()) return resolve(true)
-            const cleanup = this.onMarkerEnter(() => {
+            if (this.isPlayerInside()) return resolve(true)
+            const cleanup = this.onEnter(() => {
                 resolve(true)
                 cleanup()
             })
@@ -143,7 +143,7 @@ export class Marker {
      */
     public nextLeave(): Promise<true> {
         return new Promise(resolve => {
-            const cleanup = this.onMarkerLeave(() => {
+            const cleanup = this.onLeave(() => {
                 resolve(true)
                 cleanup()
             })
@@ -155,7 +155,7 @@ export class Marker {
      */
     public enterOrLeave(): Promise<"IN" | "OUT"> {
         return new Promise(resolve => {
-            const cleanup = this.onMarkerEnterOrLeave((_, newState) => {
+            const cleanup = this.onEnterOrLeave((_, newState) => {
                 resolve(newState)
                 cleanup()
             })

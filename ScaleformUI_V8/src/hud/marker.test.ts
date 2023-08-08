@@ -2,8 +2,8 @@ import {Marker} from "./marker";
 import {Rgba} from "../math/rgba";
 import {Vector3} from "../math/vector3";
 
-const createMockMarker = (scale?: Vector3) => new Marker({
-    checkZ: true,
+const createMockMarker = (scale?: Vector3, checkZ = true) => new Marker({
+    checkZ,
     position: new Vector3(10, 10, 10),
     color: Rgba.white,
     faceCamera: false,
@@ -13,7 +13,7 @@ const createMockMarker = (scale?: Vector3) => new Marker({
 });
 
 describe("marker test", () => {
-    let marker: Marker;
+    let marker: Marker
 
     const setupMocks = (coords: [number, number, number]) => {
         const groundZMock = jest.fn(() => [false, 0] as [boolean, number]);
@@ -27,23 +27,40 @@ describe("marker test", () => {
         global.DrawMarker = drawMarkerMock;
 
         return { groundZMock, ppedMock, getEntityCoordsMock, drawMarkerMock };
-    };
+    }
 
-    it("should test marker distance calculations", () => {
+    it("should test marker distance calculations with Z enabled", () => {
         marker = createMockMarker(new Vector3(2, 2, 2));
-        const { ppedMock, getEntityCoordsMock: getEntityCoordsMock1 } = setupMocks([13, 13, 8]);
+        const { ppedMock, getEntityCoordsMock } = setupMocks([13, 13, 8]);
 
         marker.draw();
         expect(marker.isInDrawRange(0, new Vector3(13, 13, 8))).toBeTruthy();
         expect(marker.isPlayerInside()).toBeFalsy();
 
         expect(ppedMock).toBeCalledTimes(1);
-        expect(getEntityCoordsMock1).toBeCalledTimes(1);
+        expect(getEntityCoordsMock).toBeCalledTimes(1);
 
         setupMocks([10, 11, 10]);
 
         marker.draw();
         expect(marker.isInDrawRange(0, new Vector3(13, 13, 8))).toBeTruthy();
         expect(marker.isPlayerInside()).toBeTruthy();
+    })
+    it("should test marker distance calculations with Z disabled", () => {
+        marker = createMockMarker(new Vector3(2, 2, 2), false);
+        const { ppedMock, getEntityCoordsMock } = setupMocks([13, 13, 8]);
+
+        marker.draw();
+        expect(marker.isInDrawRange(0, new Vector3(13, 13, 8))).toBeTruthy();
+        expect(marker.isPlayerInside()).toBeFalsy();
+
+        expect(ppedMock).toBeCalledTimes(1);
+        expect(getEntityCoordsMock).toBeCalledTimes(1);
+
+        setupMocks([10, 11, 10]);
+
+        marker.draw();
+        expect(marker.isInDrawRange(0, new Vector3(13, 13, 50))).toBeTruthy();
+        expect(marker.isPlayerInside()).toBeTruthy();
     });
-});
+})

@@ -9,6 +9,10 @@ export type PrimitiveVector3 = [number, number, number]
  * Immutable Vector class, partially done by me and by other authors.
  */
 export class Vector3 implements Vec3 {
+
+    public static zero() {
+        return new Vector3(0, 0, 0)
+    }
     public static create(v1: number | Vec3): Vector3 {
         if (typeof v1 === "number") {
             return new Vector3(v1, v1, v1);
@@ -91,6 +95,12 @@ export class Vector3 implements Vec3 {
         return Math.sqrt(this.distanceSquared(v));
     }
 
+    public distanceNoZ(v: Vec3): number {
+        const dx = this.x - v.x;
+        const dy = this.y - v.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
     public get normalize(): Vector3 {
         return Vector3.normalize(this);
     }
@@ -163,5 +173,19 @@ export class Vector3 implements Vec3 {
 
     public toObject(): Vec3 {
         return {x: this.x, y: this.y, z: this.z}
+    }
+
+    public cloneWith(angle: "x" | "y" | "z", value: number) {
+        return new Vector3(angle === "x" ? value : this.x, angle === "y" ? value : this.y, angle === "z" ? value : this.z)
+    }
+
+    public get magnitude() {
+        return Math.sqrt(this.dotProduct(this))
+    }
+
+    public isInsideSphere(pos: Vector3, scale: Vector3) {
+        const dist = this.subtract(pos)
+        const rad = scale.magnitude / 2
+        return dist.magnitude <= rad
     }
 }

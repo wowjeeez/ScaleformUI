@@ -1,4 +1,4 @@
-import {isOneOfEnum} from "../helpers/oneOfEnum";
+import {isOneOfEnum} from "../helpers/collections";
 
 export enum BadgeStyle {
     NONE = 0,

@@ -40,7 +40,7 @@ describe("marker test", () => {
         expect(ppedMock).toBeCalledTimes(1);
         expect(getEntityCoordsMock1).toBeCalledTimes(1);
 
-        const { getEntityCoordsMock: getEntityCoordsMock2 } = setupMocks([10, 11, 10]);
+        setupMocks([10, 11, 10]);
 
         marker.draw();
         expect(marker.isInDrawRange(0, new Vector3(13, 13, 8))).toBeTruthy();

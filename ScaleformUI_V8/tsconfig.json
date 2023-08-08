@@ -13,7 +13,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": false,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "experimentalDecorators": true
   },
   "include": ["./**/*"],
   "exclude": ["**/node_modules"]

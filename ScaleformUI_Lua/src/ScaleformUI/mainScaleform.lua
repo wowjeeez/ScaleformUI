@@ -1,16 +1,15 @@
 ScaleformUI = {}
 ScaleformUI.Scaleforms = {}
-ScaleformUI.Scaleforms._ui = nil --[[@type Scaleform]]                             -- scaleformui
-ScaleformUI.Scaleforms._pauseMenu = nil --[[@type PauseMenu]]                      -- pausemenu
-ScaleformUI.Scaleforms._radialMenu = nil --[[@type RadialMenu]]                   -- radialmenu 
-ScaleformUI.Scaleforms.MidMessageInstance = MidMessageInstance --[[@type MidMessageInstance]]     -- midmessage
-ScaleformUI.Scaleforms.PlayerListScoreboard = PlayerListScoreboard --[[@type PlayerListScoreboard]] -- playerlist
-ScaleformUI.Scaleforms.InstructionalButtons = ButtonsHandler --[[@type ButtonsHandler]]       -- buttons
-ScaleformUI.Scaleforms.BigMessageInstance = BigMessageInstance --[[@type BigMessageInstance]]     -- bigmessage
-ScaleformUI.Scaleforms.Warning = WarningInstance --[[@type WarningInstance]]                   -- warning
+ScaleformUI.Scaleforms._ui = nil --[[@type Scaleform]]                                                -- scaleformui
+ScaleformUI.Scaleforms._pauseMenu = nil --[[@type PauseMenu]]                                         -- pausemenu
+ScaleformUI.Scaleforms._radialMenu = nil --[[@type RadialMenu]]                                       -- radialmenu
+ScaleformUI.Scaleforms.MidMessageInstance = MidMessageInstance --[[@type MidMessageInstance]]         -- midmessage
+ScaleformUI.Scaleforms.PlayerListScoreboard = PlayerListScoreboard --[[@type PlayerListScoreboard]]   -- playerlist
+ScaleformUI.Scaleforms.InstructionalButtons = ButtonsHandler --[[@type ButtonsHandler]]               -- buttons
+ScaleformUI.Scaleforms.BigMessageInstance = BigMessageInstance --[[@type BigMessageInstance]]         -- bigmessage
+ScaleformUI.Scaleforms.Warning = WarningInstance --[[@type WarningInstance]]                          -- warning
 ScaleformUI.Scaleforms.JobMissionSelector = MissionSelectorHandler --[[@type MissionSelectorHandler]] -- missionselector
-ScaleformUI.Scaleforms.RankbarHandler = RankbarHandler --[[@type RankbarHandler]]             -- rankbar
-ScaleformUI.Scaleforms.CountdownHandler = CountdownHandler --[[@type CountdownHandler]]         -- countdown
+ScaleformUI.Scaleforms.RankbarHandler = RankbarHandler --[[@type RankbarHandler]]                     -- rankbar
 ScaleformUI.Notifications = Notifications
 ScaleformUI.Scaleforms.BigFeed = BigFeedInstance
 ScaleformUI.Scaleforms.MinimapOverlays = MinimapOverlays
@@ -41,6 +40,7 @@ Citizen.CreateThread(function()
     ScaleformUI.Scaleforms._radialMenu = Scaleform.RequestWidescreen("radialmenu")
     ScaleformUI.Scaleforms._pauseMenu = PauseMenu.New()
     ScaleformUI.Scaleforms._pauseMenu:Load()
+    ScaleformUI.Scaleforms.MinimapOverlays:Load()
 
     while true do
         ScaleformUI.WaitTime = 850

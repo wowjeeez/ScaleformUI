@@ -926,6 +926,8 @@ namespace ScaleformUI.Menu
 
         public bool MouseEdgeEnabled = true;
         public bool ControlDisablingEnabled = true;
+        private bool enabled3DAnimations;
+
         public bool EnableAnimation
         {
             get => enableAnimation;
@@ -938,6 +940,20 @@ namespace ScaleformUI.Menu
                 }
             }
         }
+
+        public bool Enabled3DAnimations
+        {
+            get => enabled3DAnimations;
+            set
+            {
+                enabled3DAnimations = value;
+                if (Visible)
+                {
+                    Main.scaleformUI.CallFunction("ENABLE_3D_ANIMATIONS", enabled3DAnimations);
+                }
+            }
+        }
+
         public MenuAnimationType AnimationType
         {
             get => animationType;
@@ -1779,10 +1795,23 @@ namespace ScaleformUI.Menu
                 else
                 {
                     BreadcrumbsHandler.SwitchInProgress = true;
-                    MenuBase prevMenu = BreadcrumbsHandler.PreviousMenu;
-                    BreadcrumbsHandler.Backwards();
+                    MenuBase prevMenu = null;
+                    if (BreadcrumbsHandler.CurrentDepth > 0)
+                    {
+                        prevMenu = BreadcrumbsHandler.PreviousMenu;
+                        if (prevMenu is UIMenu uimenu)
+                        {
+                            if (uimenu.MenuItems.Count == 0)
+                            {
+                                MenuHandler.CloseAndClearHistory();
+                                throw new Exception($"UIMenu {this.Title} previous menu is empty... Closing and clearing history.");
+                            }
+                        }
+                        BreadcrumbsHandler.Backwards();
+                    }
                     Visible = false;
-                    prevMenu.Visible = true;
+                    if (prevMenu != null)
+                        prevMenu.Visible = true;
                     BreadcrumbsHandler.SwitchInProgress = false;
                 }
             }
@@ -2169,6 +2198,12 @@ namespace ScaleformUI.Menu
                 _itemsDirty = value;
                 if (value)
                 {
+                    if (this.MenuItems.Count == 0)
+                    {
+                        MenuHandler.CloseAndClearHistory();
+                        throw new Exception($"UIMenu {this.Title} menu is empty... Closing and clearing history.");
+                    }
+
                     Main.InstructionalButtons.SetInstructionalButtons(InstructionalButtons);
                     canBuild = true;
                     MenuHandler.currentMenu = this;
@@ -2279,6 +2314,7 @@ namespace ScaleformUI.Menu
                 }
             }
             Main.scaleformUI.CallFunction("ENABLE_MOUSE", MouseControlsEnabled);
+            Main.scaleformUI.CallFunction("ENABLE_3D_ANIMATIONS", enabled3DAnimations);
             EnableAnimation = _animEnabled;
             FadeInMenu();
             isBuilding = false;

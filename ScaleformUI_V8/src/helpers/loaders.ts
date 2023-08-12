@@ -24,3 +24,5 @@ export const loadPedHeadshot = async (ped: number) => {
     await waitUntilReturns(noop, () => IsPedheadshotValid(handle) && IsPedheadshotReady(handle), [true, 1], 0)
     return handle
 }
+
+export const block = (ms: number) => new Promise(res => setTimeout(res, ms))

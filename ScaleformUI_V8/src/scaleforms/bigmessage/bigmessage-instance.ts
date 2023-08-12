@@ -1,12 +1,12 @@
 import {Singleton} from "../../helpers/singleton.decorator";
-import {Scaleform} from "../scaleform";
+import {Scaleform, ScaleformHandler} from "../scaleform";
 import {cache} from "@babel/traverse";
 import scope = cache.scope;
 import {block, noop, waitUntilReturns} from "../../helpers/loaders";
 import {Color} from "../../elements/color";
 
 @Singleton
-export class BigmessageInstance {
+export class BigmessageInstance implements ScaleformHandler {
     private scaleform?: Scaleform
     private manualDispose = false
     private transition: "TRANSITION_OUT" | "TRANSITION_UP" | "TRANSITION_DOWN"  = "TRANSITION_OUT"

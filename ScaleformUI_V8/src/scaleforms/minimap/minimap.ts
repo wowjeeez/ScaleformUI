@@ -1,5 +1,6 @@
 import {Singleton} from "../../helpers/singleton.decorator";
 import {noop, waitUntilReturns} from "../../helpers/loaders";
+import {ScaleformHandler} from "../scaleform";
 
 @Singleton
 export class MinimapOverlays {

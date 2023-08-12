@@ -7,6 +7,13 @@ export class ScaleformLabel {
 export class ScaleformLiteral {
     constructor(public readonly literal: string) {}
 }
+
+export interface ScaleformHandler {
+    load(): Promise<void>
+    update(): void
+    destroy(): Promise<void>
+}
+
 export class Scaleform {
     private deleted = false
     private constructor(private readonly name: string, readonly handle: number) {}

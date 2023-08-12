@@ -1,11 +1,11 @@
-import {Scaleform} from "../scaleform";
+import {Scaleform, ScaleformHandler} from "../scaleform";
 import {ProxySetters} from "../../helpers/proxy-setters.decorator";
 import {noop, waitUntilReturns} from "../../helpers/loaders";
 import {Singleton} from "../../helpers/singleton.decorator";
 
 @ProxySetters<BigFeedHandler>("_proxiedSetterCall", true)
 @Singleton
-export class BigFeedHandler {
+export class BigFeedHandler implements ScaleformHandler {
     private scaleform?: Scaleform
     public accessor title = ""
     public accessor subtitle = ""

@@ -13,6 +13,10 @@ export class Rgba {
         return new Rgba(255, r, g, b);
     }
 
+    public static fromArr([r, g, b, a]: [number, number, number, number]) {
+        return new Rgba(r, g, b, a)
+    }
+
     public toArr(): [number, number, number, number] {
         return [this.r, this.g, this.b, this.a]
     }
